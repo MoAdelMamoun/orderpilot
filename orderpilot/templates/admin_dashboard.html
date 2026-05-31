@@ -4,7 +4,7 @@
 
 {% block content %}
 <h1>Admin dashboard</h1>
-<p class="subtitle">Orders captured by the bot — from both the simulator and (if enabled) the live Telegram bot. All entries are fictional demo data.</p>
+<p class="subtitle">Orders captured by the bot — from both the simulator and (if enabled) the live Telegram bot. All entries are fictional sample data.</p>
 
 <div class="kpis">
   <div class="kpi"><div class="label">Orders today</div><div class="value">{{ stats.orders_today }}</div></div>
@@ -43,8 +43,8 @@
   </tbody>
 </table>
 
-<h2>Demo controls</h2>
-<form method="post" action="/admin/reset" onsubmit="return confirm('Reset all demo data back to the seeded sample?')">
-  <button class="btn btn-danger" type="submit">Reset demo data</button>
+<h2>Sample data</h2>
+<form method="post" action="/admin/reset" onsubmit="return confirm('Reset all data back to the seeded sample?')">
+  <button class="btn btn-danger" type="submit">Reset sample data</button>
 </form>
 {% endblock %}

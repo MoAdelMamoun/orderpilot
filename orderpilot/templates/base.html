@@ -7,9 +7,8 @@
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <div class="demo-banner">⚠ {{ demo_banner }}</div>
   <div class="topbar">
-    <div class="brand">Order<span>Pilot</span> · <small class="muted">{{ shop_name }} ({{ shop_tagline }})</small></div>
+    <div class="brand">Order<span>Pilot</span> · <small class="muted">{{ shop_name }} · {{ shop_tagline }}</small></div>
     <nav>
       <a href="/" class="{% block nav_sim %}{% endblock %}">Chat simulator</a>
       <a href="/admin" class="{% block nav_admin %}{% endblock %}">Admin</a>
@@ -20,7 +19,7 @@
     {% block content %}{% endblock %}
   </div>
   <div class="footer">
-    OrderPilot — a portfolio demo by
+    OrderPilot — a showcase project by
     <a href="https://mohamedadelmamoun.com">Mohamed Adel Mamoun</a>.
     Proves the “Bots &amp; Integrations” service area. All data is fictional.
   </div>

@@ -45,7 +45,6 @@ def _ctx(request: Request, **extra) -> dict:
         "request": request,
         "shop_name": config.SHOP_NAME,
         "shop_tagline": config.SHOP_TAGLINE,
-        "demo_banner": config.DEMO_BANNER,
         "live_telegram": config.LIVE_TELEGRAM_ENABLED,
     }
     base.update(extra)

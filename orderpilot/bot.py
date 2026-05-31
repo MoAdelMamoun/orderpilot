@@ -126,7 +126,7 @@ def _dispatch(conn, conv_id, state, ctx, text, low, channel) -> list[str]:
             db.update_conversation(conn, conv_id, handoff=True)
             return [
                 "🙋 I've flagged this chat for a human teammate.\n"
-                "_(Demo — no real staff will reply; this just shows the handoff "
+                "_(No real staff will reply; this just shows the handoff "
                 "being recorded for the admin dashboard.)_\n\n"
                 "Type *menu* to keep using the bot."
             ]
@@ -186,7 +186,7 @@ def _dispatch(conn, conv_id, state, ctx, text, low, channel) -> list[str]:
         db.update_conversation(conn, conv_id, state=ASK_PHONE,
                                context=ctx, customer_name=name)
         return [f"Thanks, {name}! What's a phone number we can reach you on?\n"
-                "_(Demo — please use a fake 555 number.)_"]
+                "_(Please use a fake 555 number.)_"]
 
     if state == ASK_PHONE:
         ctx["phone"] = text.strip()
@@ -205,14 +205,14 @@ def _dispatch(conn, conv_id, state, ctx, text, low, channel) -> list[str]:
                 conn, conversation_id=conv_id,
                 customer_name=ctx.get("name", "Guest"),
                 phone=ctx.get("phone", ""),
-                address=ctx.get("address", "Pickup (demo)"),
+                address=ctx.get("address", "Pickup"),
                 items=cart, channel=channel,
             )
             db.update_conversation(conn, conv_id, state=IDLE, context={})
             return [
                 f"✅ Order *{order_id}* confirmed — {money(_cart_total(cart))}.\n"
                 "We'll start preparing it shortly!\n\n"
-                f"_(Demo order — nothing is really being made.)_\n"
+                f"_(Sample order — nothing is really prepared.)_\n"
                 f"Reply *2* anytime to check its status, or *menu* for the menu."
             ]
         if low in ("no", "n", "cancel"):

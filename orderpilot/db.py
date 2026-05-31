@@ -75,7 +75,7 @@ def init_db(seed: bool = True) -> None:
 
 
 def reset_db() -> None:
-    """Drop everything and re-seed — used by the 'Reset demo data' button."""
+    """Drop everything and re-seed — used by the 'Reset sample data' button."""
     with connect() as conn:
         conn.executescript(
             "DROP TABLE IF EXISTS messages;"
@@ -238,10 +238,10 @@ def _seed() -> None:
 
     samples = [
         {
-            "conv": "demo-seed-1",
+            "conv": "sample-seed-1",
             "name": "Alice Example",
             "phone": "+1-555-0142",
-            "address": "742 Evergreen Terrace, Springfield (demo)",
+            "address": "742 Evergreen Terrace, Springfield",
             "items": [
                 {"sku": "CAP", "name": "Cappuccino", "price": 4.50, "qty": 2},
                 {"sku": "CRS", "name": "Butter Croissant", "price": 3.25, "qty": 1},
@@ -250,10 +250,10 @@ def _seed() -> None:
             "hours": 1.5,
         },
         {
-            "conv": "demo-seed-2",
+            "conv": "sample-seed-2",
             "name": "Bob Globex",
             "phone": "+1-555-0177",
-            "address": "1 Initech Plaza, Springfield (demo)",
+            "address": "1 Initech Plaza, Springfield",
             "items": [
                 {"sku": "CLD", "name": "Cold Brew", "price": 5.00, "qty": 1},
             ],
@@ -261,10 +261,10 @@ def _seed() -> None:
             "hours": 26,
         },
         {
-            "conv": "demo-seed-3",
+            "conv": "sample-seed-3",
             "name": "Carol Initech",
             "phone": "+1-555-0190",
-            "address": "500 Acme Road, Springfield (demo)",
+            "address": "500 Acme Road, Springfield",
             "items": [
                 {"sku": "LAT", "name": "Caffè Latte", "price": 4.75, "qty": 3},
                 {"sku": "MUF", "name": "Blueberry Muffin", "price": 3.50, "qty": 2},
@@ -281,7 +281,7 @@ def _seed() -> None:
                 "INSERT INTO conversations (id, channel, customer_name, state, "
                 "context, handoff, created_at, updated_at) "
                 "VALUES (?, 'simulator', ?, 'IDLE', '{}', ?, ?, ?)",
-                (s["conv"], s["name"], 1 if s["conv"] == "demo-seed-3" else 0,
+                (s["conv"], s["name"], 1 if s["conv"] == "sample-seed-3" else 0,
                  ts, ts),
             )
             for sender, text in [
@@ -300,5 +300,5 @@ def _seed() -> None:
                 (order_id, s["conv"], s["name"], s["phone"], s["address"],
                  json.dumps(s["items"]), total, s["status"], ts, ts),
             )
-            if s["conv"] == "demo-seed-3":
+            if s["conv"] == "sample-seed-3":
                 update_conversation(conn, s["conv"], handoff=True)

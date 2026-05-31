@@ -40,11 +40,11 @@ def product_by_index(index: int) -> Product | None:
 # Static FAQ answers for the fictional shop.
 FAQS: list[tuple[str, str]] = [
     ("What are your opening hours?",
-     "We're open every day, 7:00 AM – 6:00 PM (demo answer)."),
+     "We're open every day, 7:00 AM – 6:00 PM."),
     ("Where are you located?",
-     "123 Example Street, Springfield (a fictional address for this demo)."),
+     "123 Example Street, Springfield."),
     ("Do you offer delivery?",
-     "Yes — free delivery on demo orders within 3 km. This is sample copy only."),
+     "Yes — free delivery within 3 km."),
     ("What payment methods do you accept?",
-     "Cash and major cards on pickup/delivery. No real payment is taken in the demo."),
+     "Cash and major cards on pickup or delivery."),
 ]
