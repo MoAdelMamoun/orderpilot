@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Conversations{% endblock %}
+{% block nav_convs %}active{% endblock %}
+
+{% block content %}
+<h1>Conversations</h1>
+<p class="subtitle">Every chat the bot has handled. All fictional demo sessions.</p>
+
+<table>
+  <thead>
+    <tr><th>Session</th><th>Customer</th><th>Channel</th><th>State</th><th>Messages</th><th>Handoff</th><th>Last activity</th></tr>
+  </thead>
+  <tbody>
+  {% for c in conversations %}
+    <tr onclick="location.href='/admin/conversation/{{ c.id }}'" style="cursor:pointer">
+      <td><strong>{{ c.id }}</strong></td>
+      <td>{{ c.customer_name or "—" }}</td>
+      <td><span class="muted">{{ c.channel }}</span></td>
+      <td><span class="muted">{{ c.state }}</span></td>
+      <td>{{ c.msg_count }}</td>
+      <td>{% if c.handoff %}<span class="pill handoff">requested</span>{% else %}—{% endif %}</td>
+      <td class="muted">{{ c.updated_at.replace("T", " ")[:16] }}</td>
+    </tr>
+  {% else %}
+    <tr><td colspan="7" class="muted">No conversations yet.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

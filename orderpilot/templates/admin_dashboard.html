@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Admin dashboard{% endblock %}
+{% block nav_admin %}active{% endblock %}
+
+{% block content %}
+<h1>Admin dashboard</h1>
+<p class="subtitle">Orders captured by the bot — from both the simulator and (if enabled) the live Telegram bot. All entries are fictional demo data.</p>
+
+<div class="kpis">
+  <div class="kpi"><div class="label">Orders today</div><div class="value">{{ stats.orders_today }}</div></div>
+  <div class="kpi"><div class="label">Total orders</div><div class="value">{{ stats.total_orders }}</div></div>
+  <div class="kpi"><div class="label">Revenue (ex-cancelled)</div><div class="value">${{ "%.2f"|format(stats.revenue) }}</div></div>
+  <div class="kpi"><div class="label">Preparing now</div><div class="value">{{ stats.by_status.preparing }}</div></div>
+</div>
+
+<div class="filters">
+  <a href="/admin" class="{{ 'active' if not active_status else '' }}">All</a>
+  {% for s in statuses %}
+  <a href="/admin?status={{ s }}" class="{{ 'active' if active_status == s else '' }}">
+    {{ s }} ({{ stats.by_status[s] }})
+  </a>
+  {% endfor %}
+</div>
+
+<table>
+  <thead>
+    <tr><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Channel</th><th>Status</th><th>Placed</th></tr>
+  </thead>
+  <tbody>
+  {% for o in orders %}
+    <tr onclick="location.href='/admin/order/{{ o.id }}'" style="cursor:pointer">
+      <td><strong>{{ o.id }}</strong></td>
+      <td>{{ o.customer_name }}</td>
+      <td>{{ o.item_count }} item{{ 's' if o.item_count != 1 else '' }}</td>
+      <td>${{ "%.2f"|format(o.total) }}</td>
+      <td><span class="muted">{{ o.channel }}</span></td>
+      <td><span class="pill {{ o.status }}">{{ o.status }}</span></td>
+      <td class="muted">{{ o.created_at.replace("T", " ")[:16] }}</td>
+    </tr>
+  {% else %}
+    <tr><td colspan="7" class="muted">No orders yet — place one in the <a href="/">chat simulator</a>.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<h2>Demo controls</h2>
+<form method="post" action="/admin/reset" onsubmit="return confirm('Reset all demo data back to the seeded sample?')">
+  <button class="btn btn-danger" type="submit">Reset demo data</button>
+</form>
+{% endblock %}

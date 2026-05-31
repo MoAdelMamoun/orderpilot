@@ -1,0 +1,11 @@
+# OrderPilot — demo dependencies (everything the ZERO-config demo needs).
+fastapi>=0.110
+uvicorn[standard]>=0.27
+jinja2>=3.1
+python-multipart>=0.0.9
+python-dotenv>=1.0
+
+# --- FULL (live) version only — NOT needed for the demo -----------------------
+# The real Telegram bot is off unless TELEGRAM_BOT_TOKEN is set. Install this
+# only when you wire up the live bot:
+#   pip install "python-telegram-bot>=21"

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ conversation.id }}{% endblock %}
+{% block nav_convs %}active{% endblock %}
+
+{% block content %}
+<p class="muted"><a href="/admin/conversations">← Back to conversations</a></p>
+<h1>
+  Conversation {{ conversation.id }}
+  {% if conversation.handoff %}<span class="pill handoff">human handoff requested</span>{% endif %}
+</h1>
+<p class="subtitle">
+  {{ conversation.customer_name or "Unknown customer" }} ·
+  {{ conversation.channel }} · current state: <code>{{ conversation.state }}</code>
+</p>
+
+<div class="phone" style="height:auto;max-width:560px">
+  <div class="chat" style="height:auto;max-height:560px">
+    {% for m in messages %}
+    <div class="msg {{ 'user' if m.sender == 'customer' else 'bot' }}">{{ m.text|plain }}</div>
+    {% else %}
+    <p class="muted">No messages.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Chat simulator{% endblock %}
+{% block nav_sim %}active{% endblock %}
+
+{% block content %}
+<h1>Chat simulator</h1>
+<p class="subtitle">
+  Talk to the order bot exactly as a customer would on Telegram — but with
+  <strong>no Telegram and no network</strong>. Every message is sent to the same
+  <code>handle_message()</code> bot logic that powers the live bot, and orders
+  you place here appear in the <a href="/admin">admin dashboard</a>.
+</p>
+
+<div class="sim-wrap">
+  <div class="phone">
+    <div class="phone-header">
+      <div class="avatar">🤖</div>
+      <div class="meta">
+        <b>{{ shop_name }} bot</b>
+        <small>simulated · session <span id="sid"></span></small>
+      </div>
+    </div>
+    <div class="chat" id="chat"></div>
+    <form class="composer" id="composer">
+      <input id="input" autocomplete="off" placeholder="Type a message… (try “hi”)" />
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <h3>Quick replies</h3>
+      <div class="chips" id="chips">
+        <span class="chip" data-msg="hi">👋 hi</span>
+        <span class="chip" data-msg="1">🛍️ Browse menu</span>
+        <span class="chip" data-msg="2">📦 Check status</span>
+        <span class="chip" data-msg="3">❓ FAQ</span>
+        <span class="chip" data-msg="4">🙋 Talk to a human</span>
+        <span class="chip" data-msg="done">✅ Check out</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Try this flow</h3>
+      <p class="muted">
+        <code>hi</code> → <code>1</code> → pick an item → quantity →
+        <code>done</code> → your name → a 555 phone → <code>yes</code>.
+        Then open <a href="/admin">Admin</a> to see the order.
+      </p>
+      <button class="btn btn-danger" id="reset">Start a fresh chat</button>
+    </div>
+  </div>
+</div>
+
+{% block scripts %}
+<script>
+  // A throwaway session id per browser tab; clearly a demo session.
+  const sid = "sim-" + Math.random().toString(36).slice(2, 8);
+  document.getElementById("sid").textContent = sid;
+  const chat = document.getElementById("chat");
+  const input = document.getElementById("input");
+
+  // Minimal, safe Telegram-style *bold* / _italic_ renderer.
+  function escapeHtml(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  function format(text) {
+    let t = escapeHtml(text);
+    t = t.replace(/\*(.+?)\*/g, "<strong>$1</strong>");
+    t = t.replace(/_(.+?)_/g, "<em>$1</em>");
+    return t;
+  }
+  function addMessage(text, who) {
+    const div = document.createElement("div");
+    div.className = "msg " + who;
+    div.innerHTML = format(text);
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  async function send(message) {
+    if (!message.trim()) return;
+    addMessage(message, "user");
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ session_id: sid, message }),
+    });
+    const data = await res.json();
+    (data.replies || []).forEach((r) => addMessage(r, "bot"));
+  }
+
+  async function reset() {
+    chat.innerHTML = "";
+    const res = await fetch("/api/reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ session_id: sid }),
+    });
+    const data = await res.json();
+    (data.replies || []).forEach((r) => addMessage(r, "bot"));
+  }
+
+  document.getElementById("composer").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const v = input.value;
+    input.value = "";
+    send(v);
+  });
+  document.getElementById("chips").addEventListener("click", (e) => {
+    if (e.target.classList.contains("chip")) send(e.target.dataset.msg);
+  });
+  document.getElementById("reset").addEventListener("click", reset);
+
+  // Greet on load.
+  reset();
+</script>
+{% endblock %}
+{% endblock %}

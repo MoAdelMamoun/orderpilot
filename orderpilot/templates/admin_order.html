@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}{{ order.id }}{% endblock %}
+{% block nav_admin %}active{% endblock %}
+
+{% block content %}
+<p class="muted"><a href="/admin">← Back to orders</a></p>
+<h1>Order {{ order.id }} <span class="pill {{ order.status }}">{{ order.status }}</span></h1>
+<p class="subtitle">Placed {{ order.created_at.replace("T", " ")[:16] }} · via {{ order.channel }}</p>
+
+<div class="row">
+  <div class="card">
+    <h3 style="margin-top:0">Customer</h3>
+    <div class="kv">
+      <div class="k">Name</div><div>{{ order.customer_name }}</div>
+      <div class="k">Phone</div><div>{{ order.phone or "—" }}</div>
+      <div class="k">Address</div><div>{{ order.address or "—" }}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Update status</h3>
+    <form class="inline" method="post" action="/admin/order/{{ order.id }}/status">
+      <select name="status">
+        {% for s in statuses %}
+        <option value="{{ s }}" {{ 'selected' if s == order.status else '' }}>{{ s }}</option>
+        {% endfor %}
+      </select>
+      <button class="btn btn-primary" type="submit">Save</button>
+    </form>
+    <p class="muted" style="margin-top:12px">Workflow: new → confirmed → preparing → done (or cancelled).</p>
+  </div>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0">Items</h3>
+  <table>
+    <thead><tr><th>Item</th><th>Unit price</th><th>Qty</th><th>Line total</th></tr></thead>
+    <tbody>
+    {% for it in order['items'] %}
+      <tr>
+        <td>{{ it.name }}</td>
+        <td>${{ "%.2f"|format(it.price) }}</td>
+        <td>{{ it.qty }}</td>
+        <td>${{ "%.2f"|format(it.price * it.qty) }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr><td colspan="3" style="text-align:right"><strong>Total</strong></td><td><strong>${{ "%.2f"|format(order.total) }}</strong></td></tr>
+    </tfoot>
+  </table>
+</div>
+
+{% if conversation %}
+<div class="card">
+  <h3 style="margin-top:0">
+    Conversation
+    {% if conversation.handoff %}<span class="pill handoff">human handoff requested</span>{% endif %}
+    <a href="/admin/conversation/{{ conversation.id }}" style="float:right;font-size:13px">Open full thread →</a>
+  </h3>
+  <div class="chat" style="height:auto;max-height:280px;background:transparent;padding:0">
+    {% for m in messages[-6:] %}
+    <div class="msg {{ 'user' if m.sender == 'customer' else 'bot' }}">{{ m.text|plain }}</div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+{% endblock %}
